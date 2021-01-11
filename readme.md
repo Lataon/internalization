@@ -27,3 +27,22 @@ https://stackoverflow.com/questions/13678901/word-cities-towns-countries-databas
 https://www.ip2location.com/free/city-multilingual
 https://stackoverflow.com/questions/10260559/is-there-a-public-dataset-with-the-complete-i18n-list-of-countries-states-lang
 https://github.com/planetopendata/awesome-world
+
+
+**My Solution**
+
+This api use H2 data base. So you need to clone repository and run it.
+
+Run it and use Swagger on localhost, port 8080
+http://localhost:8080/app/swagger-ui.htm
+use h2 console on localhost, port 8080
+http://localhost:8080/app/h2-console
+user: sa
+password: 
+
+Use Swagger on heroku
+https://internalization.herokuapp.com/app/swagger-ui.html
+Use h2 console on heroku
+https://internalization.herokuapp.com/app/h2-console
+
+
