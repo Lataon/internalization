@@ -34,7 +34,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/cities", method = RequestMethod.GET)
-    public String getCities(@RequestParam String country,
+    public String getCities(@RequestParam(required = false) String country,
                             @RequestParam(required = false) String lang) {
         String response = "";
         if (country!=null){
