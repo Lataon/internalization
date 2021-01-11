@@ -1,6 +1,7 @@
 package com.gmail.elbaglikov.bean;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "countries")
@@ -23,7 +24,11 @@ public class Country {
     }
 
     public Country(Integer id, String language, String code, String name) {
+        this(language, code, name);
         this.id = id;
+    }
+
+    public Country(String language, String code, String name) {
         this.language = language;
         this.code = code;
         this.name = name;
@@ -63,5 +68,20 @@ public class Country {
 
     public String toString() {
         return String.format("%d, %s, %s, %s", id, language, code, name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return language.equals(country.language) &&
+                code.equals(country.code) &&
+                name.equals(country.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(language, code, name);
     }
 }

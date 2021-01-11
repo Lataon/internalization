@@ -2,16 +2,13 @@ package com.gmail.elbaglikov.bean;
 
 import javax.persistence.*;
 
-@Entity
+@MappedSuperclass
 @Table(name = "cities")
-public class City {
+public abstract class City {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     @Column
     private Integer id;
-
-    @Column(name = "locale", nullable = false)
-    private String language;
 
     @Column(name = "country_code", nullable = false)
     private String countryCode;
@@ -22,19 +19,14 @@ public class City {
     public City() {
     }
 
-    public City(Integer id, String language, String countryCode, String name) {
+    public City(Integer id, String countryCode, String name) {
+        this(countryCode, name);
         this.id = id;
-        this.language = language;
+    }
+
+    public City(String countryCode, String name) {
         this.countryCode = countryCode;
         this.name = name;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public String getCountryCode() {
@@ -61,7 +53,9 @@ public class City {
         this.id = id;
     }
 
+    protected abstract String getLocale();
+
     public String toString() {
-        return String.format("%d, %s, %s, %s", id, language, countryCode, name);
+        return String.format("%d, %s, %s, %s", id, getLocale(), countryCode, name);
     }
 }

@@ -1,26 +1,21 @@
 package com.gmail.elbaglikov.bean;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "languages")
 public class Language {
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Id
-    @Column
     private Integer id;
 
-    @Column(name = "lang_name", nullable = false)
     private String name;
 
-    @Column(name = "locale", nullable = false)
     private String locale;
 
     public Language() {
     }
 
     public Language(Integer id, String name, String locale) {
+        this(name, locale);
         this.id = id;
+    }
+
+    public Language(String name, String locale) {
         this.name = name;
         this.locale = locale;
     }

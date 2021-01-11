@@ -1,38 +1,31 @@
 package com.gmail.elbaglikov.service;
 
-import com.gmail.elbaglikov.Constants;
+import com.gmail.elbaglikov.Util;
+import com.gmail.elbaglikov.enums.LangEnum;
 import com.gmail.elbaglikov.bean.City;
-import com.gmail.elbaglikov.dao.CityJPARepository;
-import org.json.CDL;
-import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CityService {
-    @Autowired
-    private CityJPARepository cityRepository;
 
-    public String getCities(String countryCode, String language){
-        List<City> cities = cityRepository.getCitiesByCountryCodeAndLanguage(countryCode, language);
-        String result = Constants.NULL_ARRAY;
-        if (cities.size() > 0) {
-            JSONArray ja = new JSONArray();
-            ja.put(Constants.CITY_ID_KEY);
-            ja.put(Constants.LANGUAGE_KEY);
-            ja.put(Constants.COUNTRY_CODE_KEY);
-            ja.put(Constants.CITY_NAME_KEY);
+    public String getAllByCodeAndLang(String countryCode, String language) {
+        List<City> cities = getAllFromRepository(countryCode, language);
+        return Util.getArrayJsonCity(cities);
+    }
 
-            String strCities = cities.stream()
-                    .map(City::toString)
-                    .collect(Collectors.joining(Constants.OBJECT_DELIMITER));
+    public String getAllByLang(String language) {
+        List<City> cities = LangEnum.valueOf(language.toUpperCase()).getAll();
+        return Util.getArrayJsonCity(cities);
+    }
 
-            JSONArray jsonCities = CDL.toJSONArray(ja, strCities);
-            result = jsonCities.toString();
-        }
-        return result;
+    public String getAll() {
+        List<City> cities = LangEnum.getAllCities();
+        return Util.getArrayJsonCity(cities);
+    }
+
+    private List<City> getAllFromRepository(String countryCode, String language){
+        return LangEnum.valueOf(language.toUpperCase()).getAllByCountryCode(countryCode);
     }
 }
