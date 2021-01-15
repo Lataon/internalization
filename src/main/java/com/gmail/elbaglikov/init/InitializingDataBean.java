@@ -1,6 +1,9 @@
 package com.gmail.elbaglikov.init;
 
-import com.gmail.elbaglikov.SPARQLJAVA.*;
+import com.bordercloud.sparql.SparqlClient;
+import com.bordercloud.sparql.SparqlClientException;
+import com.bordercloud.sparql.SparqlResult;
+import com.bordercloud.sparql.SparqlResultModel;
 import com.gmail.elbaglikov.bean.*;
 import com.gmail.elbaglikov.dao.CountryJPARepository;
 import com.gmail.elbaglikov.dao.LanguageMemoryRepositoryImpl;

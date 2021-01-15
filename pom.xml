@@ -86,6 +86,14 @@
             <version>2.10.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.bordercloud/SPARQL-JAVA -->
+        <dependency>
+            <groupId>com.bordercloud</groupId>
+            <artifactId>SPARQL-JAVA</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+
+
 
     </dependencies>
     <build>
