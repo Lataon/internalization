@@ -1,31 +1,40 @@
 package com.gmail.elbaglikov.service;
 
-import com.gmail.elbaglikov.Util;
 import com.gmail.elbaglikov.enums.LangEnum;
 import com.gmail.elbaglikov.bean.City;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CityService {
 
-    public String getAllByCodeAndLang(String countryCode, String language) {
-        List<City> cities = getAllFromRepository(countryCode, language);
-        return Util.getArrayJsonCity(cities);
+    public Page<City> getAllByCodeAndLang(String countryCode, String language, Pageable pageable) {
+        if (countryCode == null && language == null) {
+            return getAll(pageable);
+        }
+        if (countryCode == null) {
+            return getAllByLang(language, pageable);
+        }
+        if (language == null) {
+            return getAllByCountryCode(countryCode, pageable);
+        }
+        return getAllFromRepository(countryCode, language, pageable);
     }
 
-    public String getAllByLang(String language) {
-        List<City> cities = LangEnum.valueOf(language.toUpperCase()).getAll();
-        return Util.getArrayJsonCity(cities);
+    private Page<City> getAllByLang(String language, Pageable pageable) {
+        return LangEnum.valueOf(language.toUpperCase()).getAll(pageable);
     }
 
-    public String getAll() {
-        List<City> cities = LangEnum.getAllCities();
-        return Util.getArrayJsonCity(cities);
+    private Page<City> getAllByCountryCode(String countryCode, Pageable pageable) {
+        return LangEnum.getAllCitiesByCountryCode(countryCode, pageable);
     }
 
-    private List<City> getAllFromRepository(String countryCode, String language){
-        return LangEnum.valueOf(language.toUpperCase()).getAllByCountryCode(countryCode);
+    private Page<City> getAll(Pageable pageable) {
+        return LangEnum.getAllCities(pageable);
+    }
+
+    private Page<City> getAllFromRepository(String countryCode, String language, Pageable pageable){
+        return LangEnum.valueOf(language.toUpperCase()).getAllByCountryCode(countryCode, pageable);
     }
 }

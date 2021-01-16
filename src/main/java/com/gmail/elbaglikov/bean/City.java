@@ -10,6 +10,8 @@ public abstract class City {
     @Column
     private Integer id;
 
+    private String lang;
+
     @Column(name = "country_code", nullable = false)
     private String countryCode;
 
@@ -27,6 +29,14 @@ public abstract class City {
     public City(String countryCode, String name) {
         this.countryCode = countryCode;
         this.name = name;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public String getCountryCode() {

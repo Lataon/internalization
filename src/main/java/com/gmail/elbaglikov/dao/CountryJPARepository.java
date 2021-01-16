@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface CountryJPARepository extends JpaRepository<Country, Integer> {
     List<Country> getAllByLanguage(String language);
+    List<Country> findAll();
 
-    @Query(value = "SELECT * FROM countries", nativeQuery = true)
-    List<Country> getAll();
+    @Query(value = "SELECT CODE FROM COUNTRIES", nativeQuery = true)
+    List<String> getCodes();
 }

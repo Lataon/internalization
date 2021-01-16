@@ -15,6 +15,7 @@ public class CityDe extends City {
 
     public CityDe(String countryCode, String name) {
         super(countryCode, name);
+        setLang(LOCALE);
     }
 
     @Override

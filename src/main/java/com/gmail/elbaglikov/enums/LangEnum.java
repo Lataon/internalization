@@ -8,11 +8,16 @@ import com.gmail.elbaglikov.dao.cities.CityDeJPARepository;
 import com.gmail.elbaglikov.dao.cities.CityEnJPARepository;
 import com.gmail.elbaglikov.dao.cities.CityEsJPARepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum LangEnum {
     EN("English"){
@@ -29,14 +34,16 @@ public enum LangEnum {
             cityEnRepository.deleteAll();
         }
         @Override
-        public List<City> getAllByCountryCode(String countryCode) {
-            List<City> cities = new ArrayList<>(cityEnRepository.getAllByCountryCode(countryCode));
-            return cities;
+        public Page<City> getAllByCountryCode(String countryCode, Pageable pageable) {
+            return cityEnRepository.getAllByCountryCode(countryCode, pageable).map(e->e);
         }
         @Override
-        public List<City> getAll() {
-            List<City> cities = new ArrayList<>(cityEnRepository.getAll());
-            return cities;
+        public Page<City> getAll(Pageable pageable) {
+            return cityEnRepository.findAll(pageable).map(e->e);
+        }
+        @Override
+        public long getTotalSize() {
+            return cityEnRepository.count();
         }
 
         private List<CityEn> cities = new ArrayList<>();
@@ -56,15 +63,18 @@ public enum LangEnum {
             cityDeRepository.deleteAll();
         }
         @Override
-        public List<City> getAllByCountryCode(String countryCode) {
-            List<City> cities = new ArrayList<>(cityDeRepository.getAllByCountryCode(countryCode));
-            return cities;
+        public Page<City> getAllByCountryCode(String countryCode, Pageable pageable) {
+            return cityDeRepository.getAllByCountryCode(countryCode, pageable).map(e->e);
         }
         @Override
-        public List<City> getAll() {
-            List<City> cities = new ArrayList<>(cityDeRepository.getAll());
-            return cities;
+        public Page<City> getAll(Pageable pageable) {
+            return cityDeRepository.findAll(pageable).map(e->e);
         }
+        @Override
+        public long getTotalSize() {
+            return cityDeRepository.count();
+        }
+
         private List<CityDe> cities = new ArrayList<>();
     },
 
@@ -82,15 +92,18 @@ public enum LangEnum {
             cityEsRepository.deleteAll();
         }
         @Override
-        public List<City> getAllByCountryCode(String countryCode) {
-            List<City> cities = new ArrayList<>(cityEsRepository.getAllByCountryCode(countryCode));
-            return cities;
+        public Page<City> getAllByCountryCode(String countryCode, Pageable pageable) {
+            return cityEsRepository.getAllByCountryCode(countryCode, pageable).map(e->e);
         }
         @Override
-        public List<City> getAll() {
-            List<City> cities = new ArrayList<>(cityEsRepository.getAll());
-            return cities;
+        public Page<City> getAll(Pageable pageable) {
+            return cityEsRepository.findAll(pageable).map(e->e);
         }
+        @Override
+        public long getTotalSize() {
+            return cityEsRepository.count();
+        }
+
         private List<CityEs> cities = new ArrayList<>();
     };
     private String fullName;
@@ -102,8 +115,9 @@ public enum LangEnum {
     public abstract void addCityToList(City city);
     public abstract void saveCities();
     public abstract void deleteAllCities();
-    public abstract List<City> getAllByCountryCode(String countryCode);
-    public abstract List<City> getAll();
+    public abstract Page<City> getAllByCountryCode(String countryCode, Pageable pageable);
+    public abstract Page<City> getAll(Pageable pageable);
+    public abstract long getTotalSize();
 
     public String getFullName(){
         return fullName;
@@ -119,12 +133,14 @@ public enum LangEnum {
         }
     }
 
-    public static  List<City> getAllCities() {
-        List<City> cities = new ArrayList<>();
-        for (LangEnum le : LangEnum.values()) {
-            cities.addAll(le.getAll());
-        }
-        return cities;
+    public static  Page<City> getAllCities(Pageable pageable) {
+        return getCitiesByExecutable(null, pageable,
+                (pageable1, l) -> l.getAll(pageable1));
+    }
+
+    public static  Page<City> getAllCitiesByCountryCode(String countryCode, Pageable pageable) {
+        return getCitiesByExecutable(countryCode, pageable,
+                (pageable1, l) -> l.getAllByCountryCode(countryCode, pageable1));
     }
 
     @Component
@@ -143,9 +159,6 @@ public enum LangEnum {
         @Autowired
         private CityDeJPARepository cityDeRepository;
 
-        public CityDeJPARepository getCityDeRepository() {
-            return cityDeRepository;
-        }
         @PostConstruct
         public void postConstruct() {
             LangEnum.cityDeRepository = cityDeRepository;
@@ -157,13 +170,33 @@ public enum LangEnum {
         @Autowired
         private CityEsJPARepository cityEsRepository;
 
-        public CityEsJPARepository getCityEsRepository() {
-            return cityEsRepository;
-        }
         @PostConstruct
         public void postConstruct() {
             LangEnum.cityEsRepository = cityEsRepository;
         }
+    }
+
+    private interface Executable {
+        Page<City> execute(Pageable pageable, LangEnum l);
+    }
+
+    private static Page<City> getCitiesByExecutable(String countryCode, Pageable pageable, Executable executable) {
+        final int PAGE_SIZE = pageable.getPageSize();
+        final long ELEMENTS_SIZE = pageable.getPageNumber()*PAGE_SIZE;
+        long total = 0;
+        boolean flag = true;
+        Page<City> page = null;
+        for (LangEnum l : LangEnum.values()) {
+            long totalElements = l.getTotalSize();
+            total+=totalElements;
+            if ((ELEMENTS_SIZE < total)&&flag) {
+                int pageNumber = (int)((total - ELEMENTS_SIZE) / PAGE_SIZE);
+                page = executable.execute(PageRequest.of(pageNumber, PAGE_SIZE), l);
+                flag = false;
+            }
+        }
+        page = page !=null ? page : Page.empty();
+        return new PageImpl<>(page.get().collect(Collectors.toList()), pageable, total);
     }
 
 }

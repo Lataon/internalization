@@ -15,6 +15,7 @@ public class CityEn extends City {
 
     public CityEn(String countryCode, String name) {
         super(countryCode, name);
+        setLang(LOCALE);
     }
 
     @Override

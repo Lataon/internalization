@@ -45,7 +45,7 @@ public class CountriesServiceTest {
 
     @Test
     public void getAll() {
-        Mockito.when(countryJPARepository.getAll()).thenReturn(COUNTRIES);
+        Mockito.when(countryJPARepository.findAll()).thenReturn(COUNTRIES);
         String actual = service.getAll();
         String expected = Util.getArrayJsonCountry(COUNTRIES);
         assertEquals(expected, actual);
