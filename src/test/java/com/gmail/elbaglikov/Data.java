@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Data {
-    public static final Pageable PAGEABLE = PageRequest.of(2, 3);
+
     public static final List<CityEn> CITIES_EN;
     public static final List<CityDe> CITIES_DE;
     public static final List<CityEs> CITIES_ES;
@@ -20,18 +20,27 @@ public class Data {
     static {
         CITIES_EN = new ArrayList<>();
         CITIES_EN.add(new CityEn(1, "en", "London"));
-        CITIES_EN.add(new CityEn(2, "en", "Moscow"));
-        CITIES_EN.add(new CityEn(3, "en", "Hamburg"));
+        CITIES_EN.add(new CityEn(2, "ru", "Moscow"));
+        CITIES_EN.add(new CityEn(3, "de", "Hamburg"));
+        CITIES_EN.add(new CityEn(4, "en", "London"));
+        CITIES_EN.add(new CityEn(5, "ru", "Moscow"));
+        CITIES_EN.add(new CityEn(6, "de", "Hamburg"));
 
         CITIES_DE = new ArrayList<>();
         CITIES_DE.add(new CityDe(4, "en", "London"));
         CITIES_DE.add(new CityDe(5, "en", "Moscow"));
         CITIES_DE.add(new CityDe(6, "en", "Hamburg"));
+        CITIES_DE.add(new CityDe(7, "en", "London"));
+        CITIES_DE.add(new CityDe(8, "en", "Moscow"));
+        CITIES_DE.add(new CityDe(9, "en", "Hamburg"));
 
         CITIES_ES = new ArrayList<>();
         CITIES_ES.add(new CityEs(7, "en", "London"));
         CITIES_ES.add(new CityEs(8, "en", "Moscow"));
         CITIES_ES.add(new CityEs(9, "en", "Hamburg"));
+        CITIES_ES.add(new CityEs(10, "en", "London"));
+        CITIES_ES.add(new CityEs(11, "en", "Moscow"));
+        CITIES_ES.add(new CityEs(12, "en", "Hamburg"));
 
         COUNTRIES = Arrays.asList(
                 new Country(1, LangEnum.EN.name().toLowerCase(), "us", "United States of America"),

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -61,6 +63,8 @@ public class MainControllerTest {
 
     @Test
     public void getCities() throws Exception {
+        final Pageable PAGEABLE = PageRequest.of(1, 5);
+
         List<City> cities = new ArrayList<>();
         cities.addAll(CITIES_EN);
         cities.addAll(CITIES_DE);

@@ -182,21 +182,25 @@ public enum LangEnum {
 
     private static Page<City> getCitiesByExecutable(String countryCode, Pageable pageable, Executable executable) {
         final int PAGE_SIZE = pageable.getPageSize();
-        final long ELEMENTS_SIZE = pageable.getPageNumber()*PAGE_SIZE;
-        long total = 0;
+        final long PAGE_NUMBER = pageable.getPageNumber()+1;
+        int totalPageNumber = 0;
+        long totalLangElements = 0;
         boolean flag = true;
         Page<City> page = null;
         for (LangEnum l : LangEnum.values()) {
-            long totalElements = l.getTotalSize();
-            total+=totalElements;
-            if ((ELEMENTS_SIZE < total)&&flag) {
-                int pageNumber = (int)((total - ELEMENTS_SIZE) / PAGE_SIZE);
-                page = executable.execute(PageRequest.of(pageNumber, PAGE_SIZE), l);
+            int previousPageNumber = totalPageNumber;
+            long langElements = l.getTotalSize();
+            int addPage = langElements%PAGE_SIZE>0 ? 1 : 0;
+            int pageNumber = (int)((langElements/PAGE_SIZE + addPage));
+            totalPageNumber+=pageNumber;
+            totalLangElements+=langElements;
+            if ((PAGE_NUMBER <= totalPageNumber)&&flag) {
+                page = executable.execute(PageRequest.of(pageable.getPageNumber()-previousPageNumber, PAGE_SIZE), l);
                 flag = false;
             }
         }
         page = page !=null ? page : Page.empty();
-        return new PageImpl<>(page.get().collect(Collectors.toList()), pageable, total);
+        return new PageImpl<>(page.get().collect(Collectors.toList()), pageable, totalLangElements );
     }
 
 }
